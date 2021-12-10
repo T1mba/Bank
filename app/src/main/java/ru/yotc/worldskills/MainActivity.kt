@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
     fun BanksClick(view: View) {
         startActivity(Intent(this,BankActivity::class.java))
     }
-    fun KursValue(view: View) {}
+    fun KursValue(view: View) {
+        startActivity(Intent(this,ValutesActivity::class.java))
+    }
     fun Auth(view: View) {}
 }
