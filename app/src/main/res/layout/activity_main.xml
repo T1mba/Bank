@@ -27,7 +27,15 @@
             android:layout_height="wrap_content"
             android:text="Войти"
             android:onClick="Auth"/>
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/EUR"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/USD"/>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,24 +11,25 @@ import java.lang.Exception
 
 class BankActivity : AppCompatActivity() {
     private lateinit var banksRecyclerView: RecyclerView
-    private  val bankList = ArrayList<Banks>()
+   private lateinit var app: Myapp
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bank)
         banksRecyclerView = findViewById(R.id.Banks)
+        app = applicationContext as Myapp
         banksRecyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
-        val bankAdapder = BankAdapter(bankList,this)
+        val bankAdapder = BankAdapter(app.bankList,this)
             banksRecyclerView.adapter = bankAdapder
-        HTTP.requestGET( "http://192.168.0.182:8080/bankomats",
+        HTTP.requestGET( "http://127.0.0.1:8080/bankomats",
             null
         )
         { result, error ->
             runOnUiThread {
                 if (result != null)
                     try {
-                        bankList.clear()
+                        app.bankList.clear()
                         val json = JSONObject(result)
                         if (!json.has("notice"))
                             throw Exception("Не верный формат ответа, ожидался объект notice")
@@ -36,7 +37,7 @@ class BankActivity : AppCompatActivity() {
                             val data = json.getJSONObject("notice").getJSONArray("data")
                             for (i in 0 until data.length()) {
                                 val item = data.getJSONObject(i)
-                                bankList.add(
+                                app.bankList.add(
                                     Banks(
                                         item.getString("address"),
                                         item.getString("timework")
@@ -45,7 +46,6 @@ class BankActivity : AppCompatActivity() {
                             }
 
                             banksRecyclerView.adapter?.notifyDataSetChanged()
-
                         } else {
                             throw Exception("Не верный формат ответа")
                         }

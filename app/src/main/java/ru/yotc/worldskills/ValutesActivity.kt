@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ValutesActivity : AppCompatActivity() {
-    private val valutesList = ArrayList<Valutes>()
+    private lateinit var app: Myapp
     private lateinit var date:TextView
     private lateinit var dates:LocalDateTime
     private lateinit var valutesRecyclerView: RecyclerView
@@ -23,21 +23,30 @@ class ValutesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_valutes)
         date = findViewById(R.id.date)
         dates = LocalDateTime.now()
-
+        app = applicationContext as Myapp
         date.text = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(dates)
+        var stringDate = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(dates)
         valutesRecyclerView = findViewById(R.id.valutesRecyclerView)
-        HTTP.requestGET("http://www.cbr.ru/scripts/XML_daily.asp?date_req=02/03/2002 ",
+        HTTP.requestGET("http://www.cbr.ru/scripts/XML_daily.asp?date_req=${stringDate} ",
         null
             ){result, error ->
 
             runOnUiThread {
                 if(result!=null)
                     try{
-                        val re = """<CharCode>(\w{2}.*?)</CharCode>.*?<Nominal>(.*?)</Nominal>.*?<Value>(.*?)</Value>""".toRegex(
+                        val re = """<CharCode>(\w{2}.*?)</CharCode>.*?<Nominal>(.*?)</Nominal><Name>(.*?)</Name><Value>(.*?)</Value>""".toRegex(
                             RegexOption.DOT_MATCHES_ALL)
                         val seq = re.findAll(result)
                         seq.forEach {
-                            Log.d("KEILOG", it.groupValues[1]+" "+it.groupValues[2]+" "+it.groupValues[3] + " " +it.groupValues[4])
+                            app.valuteList.add(
+                                    Valutes(
+                                            it.groupValues[1],
+                                            it.groupValues[2].toInt(),
+                                            it.groupValues[3],
+                                            it.groupValues[4].replace(',' ,'.').toDouble()
+                                    )
+                            )
+
                         }
                         valutesRecyclerView.adapter?.notifyDataSetChanged()
 
@@ -52,7 +61,9 @@ class ValutesActivity : AppCompatActivity() {
                     }
 
 
+                else{
 
+                }
             }
         }
     }
