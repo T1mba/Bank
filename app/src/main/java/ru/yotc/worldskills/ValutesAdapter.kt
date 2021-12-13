@@ -74,7 +74,13 @@ class ValutesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.valute.text = values[position].charCode
         holder.names.text = values[position].name
-
+        val icoId = activity.resources
+                .getIdentifier(
+                        values[position].charCode.substring(0,2).toLowerCase(),   // название ресурса
+                        "drawable",                 // раздел, в котором находится ресурс
+                        activity.packageName            // пакет
+                )
+        holder.iconImage.setImageResource(icoId)
         // onIconLoad.invoke(holder.iconImageView, values[position].weatherIcon)
 
 

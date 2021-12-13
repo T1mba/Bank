@@ -88,6 +88,7 @@ class BankAdapter(
             holder.isWork.text = "Не работает"
             holder.isWork.setTextColor(Color.parseColor("#ff0000"))
         }
+
         // onIconLoad.invoke(holder.iconImageView, values[position].weatherIcon)
 
         holder.container.setOnClickListener {
@@ -103,5 +104,6 @@ class BankAdapter(
         var TimeView: TextView = itemView.findViewById(R.id.Time)
         var container: LinearLayout = itemView.findViewById(R.id.container)
         var isWork: TextView = itemView.findViewById(R.id.isWork)
+
     }
 }
