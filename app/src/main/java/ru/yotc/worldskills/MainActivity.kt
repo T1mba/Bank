@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var app: Myapp
     private lateinit var usdView: TextView
     private lateinit var eurView:TextView
-    val valuteLayout = layoutInflater.inflate(R.layout.activity_valutes, null)
-    val valutesRecyclerView = valuteLayout.findViewById<RecyclerView>(R.id.valutesRecyclerView)
+
+
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -55,7 +55,9 @@ class MainActivity : AppCompatActivity() {
     fun KursValue(view: View) {
         startActivity(Intent(this,ValutesActivity::class.java))
     }
-    fun Auth(view: View) {}
+    fun Auth(view: View) {
+        LoginDialog{login, password -> }.show(supportFragmentManager, "loginDialog")
+    }
     fun getValute(){
         HTTP.requestGET("http://www.cbr.ru/scripts/XML_daily.asp?date_req=${stringDate} ",
                 null
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                             )
 
                         }
-                        valutesRecyclerView.adapter?.notifyDataSetChanged()
+
 
                     }
 

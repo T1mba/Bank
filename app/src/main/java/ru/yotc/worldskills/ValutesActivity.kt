@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.lang.Exception
 import java.time.LocalDateTime
@@ -27,6 +28,9 @@ class ValutesActivity : AppCompatActivity() {
         date.text = DateTimeFormatter.ofPattern("dd.MM.yyyy").format(dates)
         var stringDate = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(dates)
         valutesRecyclerView = findViewById(R.id.valutesRecyclerView)
+        valutesRecyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        val valutesAdapter = ValutesAdapter(app.valuteList,this)
+        valutesRecyclerView.adapter = valutesAdapter
         HTTP.requestGET("http://www.cbr.ru/scripts/XML_daily.asp?date_req=${stringDate} ",
         null
             ){result, error ->
