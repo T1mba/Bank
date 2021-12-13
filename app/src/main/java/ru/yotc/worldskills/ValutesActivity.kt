@@ -32,14 +32,14 @@ class ValutesActivity : AppCompatActivity() {
         val valutesAdapter = ValutesAdapter(app.valuteList,this)
         valutesRecyclerView.adapter = valutesAdapter
         HTTP.requestGET("http://www.cbr.ru/scripts/XML_daily.asp?date_req=${stringDate} ",
-        null
-            ){result, error ->
+                null
+        ){result, error ->
 
             runOnUiThread {
                 if(result!=null)
                     try{
                         val re = """<CharCode>(\w{2}.*?)</CharCode>.*?<Nominal>(.*?)</Nominal><Name>(.*?)</Name><Value>(.*?)</Value>""".toRegex(
-                            RegexOption.DOT_MATCHES_ALL)
+                                RegexOption.DOT_MATCHES_ALL)
                         val seq = re.findAll(result)
                         seq.forEach {
                             app.valuteList.add(
@@ -57,11 +57,11 @@ class ValutesActivity : AppCompatActivity() {
                     }
                     catch (e:Exception){
                         AlertDialog.Builder(this)
-                            .setTitle("Ошибка")
-                            .setMessage(e.message)
-                            .setPositiveButton("OK",null)
-                            .create()
-                            .show()
+                                .setTitle("Ошибка")
+                                .setMessage(e.message)
+                                .setPositiveButton("OK",null)
+                                .create()
+                                .show()
                     }
 
 
