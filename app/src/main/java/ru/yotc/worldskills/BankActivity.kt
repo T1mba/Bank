@@ -22,7 +22,7 @@ class BankActivity : AppCompatActivity() {
         banksRecyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
         val bankAdapder = BankAdapter(app.bankList,this)
             banksRecyclerView.adapter = bankAdapder
-        HTTP.requestGET( "http://192.168.0.182:8080/bankomats",
+        HTTP.requestGET( "http://192.168.0.3:8080/Bankomats",
             null
         )
         { result, error ->
@@ -40,7 +40,7 @@ class BankActivity : AppCompatActivity() {
                                 app.bankList.add(
                                     Banks(
                                         item.getString("address"),
-                                        item.getString("timework")
+                                        item.getString("work_time")
                                     )
                                 )
                             }
