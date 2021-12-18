@@ -10,15 +10,21 @@ import org.json.JSONObject
 class User_Activity : AppCompatActivity() {
     private lateinit var firstView: RecyclerView
     private lateinit var app: Myapp
+    private lateinit var secView:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
         firstView = findViewById(R.id.firstView)
         app = applicationContext as Myapp
+        secView = findViewById(R.id.secView)
         firstView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
         val cardsAdapter = CardsAdapter(app.cardList,this)
             firstView.adapter = cardsAdapter
+        secView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        val userAdapter = UserAdapter(app.userList,this)
+        secView.adapter = userAdapter
         getCards()
+        getUsers()
     }
 
     fun getCards() {
@@ -58,6 +64,54 @@ class User_Activity : AppCompatActivity() {
                             .create()
                             .show()
                     }
+                }
+            }
+        }
+    }
+    fun getUsers(){
+        HTTP.requestGET(
+            "http://192.168.0.3:8080/User",
+            null
+        ){ result, error ->
+            runOnUiThread {
+                if(result != null){
+                    try {
+                            app.userList.clear()
+                            val json = JSONObject(result)
+                        if(!json.has("notice"))
+                            throw Exception("Не верный формат ответа, ожидался объект notice")
+                        if(json.getJSONObject("notice").has("data")){
+                            val data = json.getJSONObject("notice").getJSONArray("data")
+                                for (i in 0 until  data.length()){
+                                    val item = data.getJSONObject(i)
+                                    app.userList.add(
+                                        Users(
+                                            item.getString("Name")
+                                        )
+                                    )
+                                }
+                            secView.adapter?.notifyDataSetChanged()
+                        }
+                        else{
+                            throw Exception("Не верный формат ответа")
+                        }
+                    }
+                    catch (e:java.lang.Exception){
+                        AlertDialog.Builder(this)
+                            .setTitle("Ошибка")
+                            .setMessage(e.message)
+                            .setPositiveButton("ОК",null)
+                            .create()
+                            .show()
+                    }
+                }
+                else{
+                    AlertDialog.Builder(this)
+                        .setTitle("Ошибка http-запроса")
+                        .setMessage(error)
+                        .setPositiveButton("ОК",null)
+                        .create()
+                        .show()
                 }
             }
         }
