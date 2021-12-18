@@ -196,7 +196,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun user(view: android.view.View) {
+        startActivity(Intent(this,User_Activity::class.java))
     }
+}
 
 
 

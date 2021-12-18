@@ -47,6 +47,12 @@
             android:layout_height="wrap_content"
             android:text="Курсы валют"
             android:onClick="KursValue"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/userAC"
+            android:onClick="user"
+            android:text="Данные пользователя"/>
 
         <TextView
             android:layout_width="wrap_content"

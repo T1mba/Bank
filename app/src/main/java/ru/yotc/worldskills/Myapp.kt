@@ -1,7 +1,6 @@
 package ru.yotc.worldskills
 
 import android.app.Application
-import ru.yotc.worldskills.ui.CardsUser
 
 class Myapp:Application() {
     lateinit var username:String
