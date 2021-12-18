@@ -11,10 +11,12 @@ class User_Activity : AppCompatActivity() {
     private lateinit var firstView: RecyclerView
     private lateinit var app: Myapp
     private lateinit var secView:RecyclerView
+    private lateinit var creditView:RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
         firstView = findViewById(R.id.firstView)
+
         app = applicationContext as Myapp
         secView = findViewById(R.id.secView)
         firstView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
@@ -23,8 +25,13 @@ class User_Activity : AppCompatActivity() {
         secView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
         val userAdapter = UserAdapter(app.userList,this)
         secView.adapter = userAdapter
+        creditView = findViewById(R.id.creditView)
+        creditView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL,false)
+        val creditAdapter = CreditsAdapter(app.creditList, this)
+        creditView.adapter = creditAdapter
         getCards()
         getUsers()
+        getCredits()
     }
 
     fun getCards() {
@@ -110,6 +117,58 @@ class User_Activity : AppCompatActivity() {
                         .setTitle("Ошибка http-запроса")
                         .setMessage(error)
                         .setPositiveButton("ОК",null)
+                        .create()
+                        .show()
+                }
+            }
+        }
+    }
+    fun getCredits(){
+        HTTP.requestGET("http://192.168.0.3:8080/Credit",
+        null
+        ){result, error ->
+            runOnUiThread {
+                if(result!=null){
+                    try{
+                        app.creditList.clear()
+                        val json = JSONObject(result)
+                        if(!json.has("notice"))
+                            throw Exception("Не верный формат ответа, ожидался объект notice")
+                        if(json.getJSONObject("notice").has("data")){
+                            val data = json.getJSONObject("notice").getJSONArray("data")
+                            for(i in 0 until data.length()){
+                                val item = data.getJSONObject(i)
+                                app.creditList.add(
+                                    Credits(
+                                        item.getString("Type"),
+                                        item.getString("Payment"),
+                                        item.getString("Price")
+                                    )
+                                )
+                            }
+                            creditView.adapter?.notifyDataSetChanged()
+
+                        }
+                        else{
+                            throw Exception("Не верный формат ответа")
+                        }
+                    }
+                    catch (e:java.lang.Exception){
+                        AlertDialog.Builder(this)
+                            .setTitle("Ошибка")
+                            .setMessage(e.message)
+                            .setPositiveButton("OK",null)
+                            .create()
+                            .show()
+                    }
+
+
+                }
+                else{
+                    AlertDialog.Builder(this)
+                        .setTitle("Ошибка")
+                        .setMessage(error)
+                        .setPositiveButton("OK",null)
                         .create()
                         .show()
                 }
